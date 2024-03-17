@@ -15,9 +15,10 @@ const signUp = async(req, res)=>{
     if(!isEmailValid)
     return res.status(400).json({ sucess: false, message:'provide a valid email'})
 
-    
 
     try{
+        const isUserExist= await AuthModel.findOne({email})
+        if(isUserExist)return res.status(400).json({ sucess: false, message:`user already exists`})
         const userInfo= await AuthModel(req.body).save(req.body)
         if(!userInfo) return res.status(400).json({ sucess: false, message:`failed to save document`})
         return res.status(200).json({ sucess: true, data: userInfo })
