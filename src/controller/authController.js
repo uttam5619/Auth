@@ -1,4 +1,3 @@
-
 const User = require('../model/userModel')
 const EmailValidator = require('email-validator')
 const bcrypt = require('bcrypt')
@@ -75,11 +74,10 @@ const signIn = async(req, res)=>{
         if(! (await bcrypt.compare(password,user.password)))
         return res.status(400).json({sucess:false, message:`password not valid`})
 
-        const accessToken= user.jwtToken()
+        const accessToken= user.generateToken()
         user.password=undefined
-        const cookieOption ={maxAge:24*60*60*1000, httpOnly:true}
-        res.cookie('token', accessToken, cookieOption)
-        res.status(200).json({sucess:true, data:user})
+        res.cookie('token', accessToken, cookieOptions)
+        res.status(200).json({sucess:true,message:`login successfully`, data:user})
 
     }catch(err){
         res.status(400).json({sucess:false, message:err.message})
